@@ -8,6 +8,8 @@ import {Context} from "../context/BlogContext"
 
 import BlogForm from "../components/BlogForm"
 
+
+
 function EditScreen({navigation}){
   const {state,saveBlogPost} = useContext(Context)
   const bid = navigation.getParam("bid")
