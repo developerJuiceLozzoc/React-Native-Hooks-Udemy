@@ -3,7 +3,7 @@ import {useState,useEffect} from "react"
 import { StyleSheet, Text, View,
   FlatList,Button,
   TouchableOpacity} from 'react-native';
-import {Feather } from "@expo/vector-icons"
+import {EvilIcons } from "@expo/vector-icons"
 
 import {Context} from "../context/BlogContext"
 
@@ -14,12 +14,21 @@ function ShowScreen({navigation}){
   })
   return (<View>
     <Text>{blogPost.title}</Text>
+    <Text>{blogPost.content}</Text>
 
 
   </View>)
 
 }
-
+ShowScreen.navigationOptions = ({navigation}) => {
+  return {
+    headerRight: () => (
+      <TouchableOpacity onPress={() => navigation.navigate('Edit',{bid: navigation.getParam('bid')})}>
+        <EvilIcons name="pencil" size={30} />
+      </TouchableOpacity>
+    )
+  }
+}
 const s = StyleSheet.create({
 
 })

@@ -5,12 +5,18 @@ import { StyleSheet, Text, View,
 import {Feather } from "@expo/vector-icons"
 
 import {Context} from "../context/BlogContext"
+
 import BlogForm from "../components/BlogForm"
 
-function CreateScreen({navigation}){
-  const {state,addBlogPost} = useContext(Context)
-  const [title,setTitle] = useState("")
-  const [body,setBody] = useState("")
+function EditScreen({navigation}){
+  const {state,saveBlogPost} = useContext(Context)
+  const bid = navigation.getParam("bid")
+  const item = state.find(function(post){
+    return post.id == bid
+  })
+
+  const [title,setTitle] = useState(item.title)
+  const [body,setBody] = useState(item.content)
 
   return <BlogForm
     title={title}
@@ -18,9 +24,10 @@ function CreateScreen({navigation}){
     body={body}
     setBody={setBody}
     onSubmit={function(){
-      addBlogPost({
+      saveBlogPost({
         title,
-        content: body
+        content: body,
+        id: bid,
       },function(){
         navigation.pop()
       })
@@ -28,7 +35,6 @@ function CreateScreen({navigation}){
     />
 
 }
-
 
 const s = StyleSheet.create({
   input: {
@@ -45,4 +51,4 @@ const s = StyleSheet.create({
     marginLeft: 5,
   }
 })
-export default CreateScreen
+export default EditScreen
