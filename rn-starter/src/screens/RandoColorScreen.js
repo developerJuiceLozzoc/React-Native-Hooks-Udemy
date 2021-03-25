@@ -8,11 +8,10 @@ function ListScreen() {
       <Button
         title="Add a Color"
         onPress={()=>{
-          console.log(colors);
           setColors([...colors,genColors()])
         }}
         />
-        
+
       <FlatList
         data={colors}
         keyExtractor={(el) => el}
