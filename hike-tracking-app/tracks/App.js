@@ -6,6 +6,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 import { Transition } from 'react-native-reanimated';
+import {FontAwesome} from "@expo/vector-icons"
 
 import AccountScreen from "./src/screens/AccountScreen"
 import SigninScreen from "./src/screens/SigninScreen"
@@ -15,6 +16,8 @@ import TrackDetailScreen from "./src/screens/TrackDetailScreen"
 import TrackListScreen from "./src/screens/TrackListScreen"
 import ResolveAuth from "./src/screens/ResolveAuthScreen"
 import {Provider as AuthProvider} from "./src/context/authContext"
+import {Provider as LocationProvider} from "./src/context/locationContext"
+import {Provider as TrackProvider} from "./src/context/trackContext"
 
 import {setNavigator} from "./src/navigationRef"
 
@@ -42,6 +45,11 @@ const ListNavigator = createStackNavigator(
     },
   }
 );
+ListNavigator.navigationOptions = {
+  title: "List My Tracks",
+  tabBarIcon: <FontAwesome name="th-list" size={20} />
+}
+
 const tabs = createBottomTabNavigator({
   Create: { screen: TrackCreateScreen},
   List: { screen: ListNavigator},
@@ -76,8 +84,12 @@ const MySwitch = createAnimatedSwitchNavigator(
 const App = createAppContainer(MySwitch)
 export default () => {
   return (
+    <TrackProvider>
+    <LocationProvider>
     <AuthProvider>
      <App ref={(navigator)=> { setNavigator(navigator) } }/>
     </AuthProvider>
+    </LocationProvider>
+    </TrackProvider>
   )
 }
