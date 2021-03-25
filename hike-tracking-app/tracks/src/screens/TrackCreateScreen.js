@@ -1,10 +1,15 @@
 import React from "react"
-import {View,Text,StyleSheet} from "react-native"
+import {SafeAreaView} from "react-navigation"
+import {View, StyleSheet} from "react-native"
+import {Text} from "react-native-elements"
+
+import Map from "../components/Map"
 
 function TrackCreateScreen(){
-  return (<View>
+  return (<SafeAreaView>
     <Text> Create A Track </Text>
-  </View>)
+    <Map />
+  </SafeAreaView>)
 }
 
 const s = StyleSheet.create({})

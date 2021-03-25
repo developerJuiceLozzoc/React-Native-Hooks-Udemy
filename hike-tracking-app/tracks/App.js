@@ -13,6 +13,10 @@ import SignupScreen from "./src/screens/SignupScreen"
 import TrackCreateScreen from "./src/screens/TrackCreateScreen"
 import TrackDetailScreen from "./src/screens/TrackDetailScreen"
 import TrackListScreen from "./src/screens/TrackListScreen"
+import ResolveAuth from "./src/screens/ResolveAuthScreen"
+import {Provider as AuthProvider} from "./src/context/authContext"
+
+import {setNavigator} from "./src/navigationRef"
 
 const loginNavigator = createStackNavigator(
   {
@@ -62,12 +66,18 @@ function tabs() {
 
 const MySwitch = createAnimatedSwitchNavigator(
   {
+    Resolve: ResolveAuth,
     LoginFlow: loginNavigator,
     MainFlow: tabs
   },
   {}
 );
 
-
-
-export default createAppContainer(MySwitch);
+const App = createAppContainer(MySwitch)
+export default () => {
+  return (
+    <AuthProvider>
+     <App ref={(navigator)=> { setNavigator(navigator) } }/>
+    </AuthProvider>
+  )
+}
