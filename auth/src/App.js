@@ -18,21 +18,38 @@ import {
   View,
 } from 'react-native';
 
-import {Header} from "./components/common"
+import {Header,Button} from "./components/common"
 import LoginForm from "./components/LoginForm"
 
 
 class App extends React.Component {
+  constructor(){
+    super()
+    this.state = {
+      username: null
+    }
+  }
   componentDidMount(){
 
   }
-  render(){
-    return (
-      <View>
+  loggedin(username){
+    this.setState({
+      username
+      })
+  }
+  renderContent(){
+    if(this.state.username){
+      return <Button> Log out </Button>
+    }else{
+      return (<View>
         <Header title="Authentication" />
-        <LoginForm />
-      </View>
-      )
+        <LoginForm  onLogin={this.loggedin}/>
+      </View>)
+    }
+  }
+
+  render(){
+    return this.renderContent()
   }
 }
 

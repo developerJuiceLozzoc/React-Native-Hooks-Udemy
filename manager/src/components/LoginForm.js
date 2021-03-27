@@ -1,15 +1,15 @@
 import React from "react"
 import {View,Text} from "react-native"
 import {Button,TextField,Card,CardSection,Spinner} from "./common"
-
-import {login,signup} from "../Auth"
+import {emailChanged,passwordChanged,
+        SigninFlowAction,sendLoginError,
+        startLoginProcess,} from "../actions"
+import {connect} from "react-redux"
 
 class LoginForm extends React.Component {
     constructor(){
       super()
       this.state = {
-        email: "",
-        password: "",
         error:null,
         isLoading: false,
       }
@@ -19,36 +19,17 @@ class LoginForm extends React.Component {
       this.props.loggedin(this.state.email)
     }
     onButtonPress(){
-      const {email,password} = this.state
+      const {email,password} = this.props
       if(!email.length || !password.length){
-        this.setState({error: "fields are required",isLoading: false,})
+        this.props.sendLoginError("fields are required")
         return
       }
-      const self = this;
-      self.setState({error: "",isLoading: true})
-      login(email,password)
-      .then(onLoginSuccess.bind(self))
-      .catch(function(e){
-        if(e == "invalid"){
-          return new Promise(function(r,j){
-            j(e)
-          })
-        }
-        else{
-          const {email,password} = e
-          return signup(email,password)
-        }
-      })
-      .then(onLoginSuccess.bind(self))
-      .catch(function(err){
-        console.log(err);
-        self.setState({error: "Error signing/signuping",isLoading: false,})
-
-      })
+      this.props.startLoginProcess()
+      this.props.SigninFlowAction({email,password})
 
     }
     renderButton(){
-      if(this.state.isLoading){
+      if(this.props.isLoading){
         return <Spinner />
       }
       else{
@@ -60,35 +41,41 @@ class LoginForm extends React.Component {
         </Button>
       }
     }
-
+    onEmailChange(text){
+      this.props.emailChanged(text)
+    }
+    onPassChange(text){
+      this.props.passwordChanged(text)
+    }
     componentDidMount(){
 
     }
     render(){
-      return (
+      return (<SafeAreaView style={{flex: 1}}>
+
         <Card>
           <CardSection >
             <TextField
               placeholder="user123@gmail.com"
               label="Email"
-              setValue={text => this.setState({email: text})}
-              value={this.state.email}/>
+              setValue={this.onEmailChange.bind(this)}
+              />
           </CardSection>
           <CardSection >
             <TextField
               placeholder="super secret pass"
               label="Password"
-              setValue={text => this.setState({password: text})}
-              value={this.state.password}/>
+              setValue={this.onPassChange.bind(this)}
+              />
           </CardSection>
           <Text style={styles.errorTextStyle}>
-            {this.state.error}
+            {this.props.error}
           </Text>
           <CardSection>
             {this.renderButton()}
           </CardSection>
         </Card>
-      )
+      </SafeAreaView>)
     }
 }
 const styles = {
@@ -99,5 +86,19 @@ const styles = {
   }
 }
 
+function mapStateToProps(state){
+ return {
+   email: state.auth.email,
+   password: state.auth.password,
+   error: state.auth.error,
+   isLoading: state.auth.isLoading
+ }
+}
 
-export default LoginForm
+
+
+
+export default connect(mapStateToProps,
+  {SigninFlowAction,
+  sendLoginError,
+  emailChanged,passwordChanged,startLoginProcess})(LoginForm)
